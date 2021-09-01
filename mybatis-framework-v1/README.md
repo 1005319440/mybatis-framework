@@ -1,0 +1,2 @@
+自定义mybatis框架v1版本(JDBC+properties配置文件)
+了解参数处理的思路和结果映射的思路
