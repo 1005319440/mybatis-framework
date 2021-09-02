@@ -24,12 +24,7 @@ public class Mybatis {
     private Configuration configuration;
 
     /**
-     * 存储 jdbc 配置文件中的内容
-     */
-    private Properties properties = new Properties();
-
-    /**
-     * 查村用户
+     * 查询
      */
     @Test
     public void testSelectList() throws NoSuchFieldException {
@@ -39,10 +34,6 @@ public class Mybatis {
         paramsMap.put("username", "飞跃");
         List<User> userList = selectList("queryUserByIdAndUsername", paramsMap);
         System.out.println(userList);
-    }
-
-    private void loadXml(String location) {
-
     }
 
     private <T> List<T> selectList(String statementId, Object params) throws NoSuchFieldException {
@@ -90,6 +81,10 @@ public class Mybatis {
 
     private Connection getConnection(Configuration configuration) {
         return null;
+    }
+
+    private void loadXml(String location) {
+
     }
 
 }
