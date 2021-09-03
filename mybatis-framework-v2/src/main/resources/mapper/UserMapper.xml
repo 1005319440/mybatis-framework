@@ -1,8 +1,8 @@
 <mapper namespace="test">
     <!-- select标签，封装了SQL语句信息、入参类型、结果映射类型 -->
     <select id="queryUserById"
-            parameterType="com.kkb.mybatis.po.User"
-            resultType="com.kkb.mybatis.po.User"
+            parameterType="cn.zfy.mybatis.pojo.User"
+            resultType="cn.zfy.mybatis.pojo.User"
             statementType="prepared">
 
         SELECT * FROM user WHERE id = #{id} AND username like '%${username}'

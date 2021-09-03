@@ -1,6 +1,6 @@
 package cn.zfy.mybatis.framework.config;
 
-import cn.zfy.mybatis.framework.sqlSource.SqlSource;
+import cn.zfy.mybatis.framework.sqlsource.SqlSource;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,7 +32,7 @@ public class MappedStatement {
         this.sqlSource = builder.sqlSource;
     }
 
-    static class Builder {
+    public static class Builder {
         private String statementId;
         private String statementType;
         private Class<?> parameterTypeClass;
