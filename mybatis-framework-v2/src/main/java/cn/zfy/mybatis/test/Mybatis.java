@@ -42,10 +42,10 @@ public class Mybatis {
     @Test
     public void testSelectList() throws Exception {
         loadXml("mybatis-config.xml");
-        Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("id", 1);
-        paramsMap.put("username", "飞跃");
-        List<User> userList = selectList("queryUserByIdAndUsername", paramsMap);
+        User user = new User();
+        user.setId(1);
+        user.setUsername("飞跃");
+        List<User> userList = selectList("test.queryUserById", user);
         System.out.println(userList);
     }
 
@@ -159,7 +159,7 @@ public class Mybatis {
         List<Element> mapperElementList = mappersElement.elements("mapper");
         if (null == mapperElementList || 0 == mapperElementList.size()) return;
         mapperElementList.forEach(mapperElement -> {
-            String resource = mapperElement.attributeValue("mapper");
+            String resource = mapperElement.attributeValue("resource");
             InputStream inputStream = getResourceAsStream(resource);
             Document mapperDocument = createDocument(inputStream);
             Element mapper = mapperDocument.getRootElement();
