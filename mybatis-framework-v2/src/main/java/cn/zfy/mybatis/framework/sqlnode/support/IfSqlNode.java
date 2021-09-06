@@ -2,6 +2,7 @@ package cn.zfy.mybatis.framework.sqlnode.support;
 
 import cn.zfy.mybatis.framework.sqlnode.DynamicContext;
 import cn.zfy.mybatis.framework.sqlnode.SqlNode;
+import cn.zfy.mybatis.utils.OgnlUtils;
 
 /**
  * @Classname IfSqlNode
@@ -23,6 +24,8 @@ public class IfSqlNode implements SqlNode {
 
     @Override
     public void apply(DynamicContext context) {
-
+        boolean parameter = OgnlUtils.evaluateBoolean(test, context.getBindings().get("_parameter"));
+        if (!parameter) return;
+        mixedSqlNode.apply(context);
     }
 }

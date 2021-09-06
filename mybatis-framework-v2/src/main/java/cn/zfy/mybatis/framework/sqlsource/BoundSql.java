@@ -23,7 +23,7 @@ public class BoundSql {
 
     public BoundSql(String sql, List<ParameterMapping> parameterMappings) {
         this.sql = sql;
-        this.parameterMappings = new ArrayList<>();
+        this.parameterMappings = parameterMappings;
     }
 
     public String getSql() {

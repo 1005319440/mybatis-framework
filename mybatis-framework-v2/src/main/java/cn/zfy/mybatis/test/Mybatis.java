@@ -7,10 +7,14 @@ import cn.zfy.mybatis.framework.sqlnode.support.IfSqlNode;
 import cn.zfy.mybatis.framework.sqlnode.support.MixedSqlNode;
 import cn.zfy.mybatis.framework.sqlnode.support.StaticTextSqlNode;
 import cn.zfy.mybatis.framework.sqlnode.support.TextSqlNode;
+import cn.zfy.mybatis.framework.sqlsource.BoundSql;
+import cn.zfy.mybatis.framework.sqlsource.ParameterMapping;
 import cn.zfy.mybatis.framework.sqlsource.SqlSource;
 import cn.zfy.mybatis.framework.sqlsource.support.DynamicSqlSource;
 import cn.zfy.mybatis.framework.sqlsource.support.RawSqlSource;
 import cn.zfy.mybatis.pojo.User;
+import cn.zfy.mybatis.utils.SimpleTypeRegistry;
+import jdk.internal.org.objectweb.asm.commons.SimpleRemapper;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
@@ -18,6 +22,7 @@ import org.junit.Test;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
 
@@ -42,14 +47,17 @@ public class Mybatis {
     @Test
     public void testSelectList() throws Exception {
         loadXml("mybatis-config.xml");
-        User user = new User();
+        /*User user = new User();
         user.setId(1);
-        user.setUsername("飞跃");
-        List<User> userList = selectList("test.queryUserById", user);
+        user.setUsername("飞跃");*/
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("id", 1);
+        paramMap.put("username", "飞跃");
+        List<User> userList = selectList("test.queryUserById", paramMap);
         System.out.println(userList);
     }
 
-    private <T> List<T> selectList(String statementId, Object params) throws NoSuchFieldException {
+    private <T> List<T> selectList(String statementId, Object param) throws NoSuchFieldException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -58,17 +66,31 @@ public class Mybatis {
             //创建数据库连接
             connection = getConnection(configuration);
 
-            //sql语句
-            String sql = getSql();
 
-            //获取预处理 statement
             MappedStatement mappedStatement = configuration.getMappedStatementById(statementId);
+            //SqlSource和SqlNode的解析操作
+            SqlSource sqlSource = mappedStatement.getSqlSource();
+            //这一步骤是完成SqlSource和SqlNode的解析操作
+            BoundSql boundSql = sqlSource.getBoundSql(param);
+            //sql语句
+            String sql = boundSql.getSql();
+
+            String statementType = mappedStatement.getStatementType();
+            if ("prepare".equals(statementType)) {
+                preparedStatement = connection.prepareStatement(sql);
+            } else if ("callable".equals(statementType)) {
+                //存储过程 使用的statement
+            } else {
+
+            }
+
+
             preparedStatement = connection.prepareStatement(sql);
-            setParameter(preparedStatement, params, mappedStatement);
+            setParameter(preparedStatement, param, boundSql);
 
             resultSet = preparedStatement.executeQuery();
             handleResultSet(resultSet, resultList, mappedStatement);
-            return null;
+            return resultList;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -83,11 +105,34 @@ public class Mybatis {
         return Collections.EMPTY_LIST;
     }
 
-    private <T> void handleResultSet(ResultSet resultSet, List<T> resultList, MappedStatement mappedStatement) {
-
+    private <T> void handleResultSet(ResultSet resultSet, List<T> resultList, MappedStatement mappedStatement) throws SQLException, NoSuchFieldException, IllegalAccessException, InstantiationException {
+        Class<?> resultTypeClass = mappedStatement.getResultTypeClass();
+        while (resultSet.next()) {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            Object instance = resultTypeClass.newInstance();
+            for (int i = 0; i < columnCount; i++) {
+                String column = metaData.getColumnName(i + 1);
+                Field field = resultTypeClass.getDeclaredField(column);
+                field.setAccessible(true);
+                field.set(instance, resultSet.getObject(column));
+            }
+            resultList.add((T) instance);
+        }
     }
 
-    private void setParameter(PreparedStatement preparedStatement, Object params, MappedStatement mappedStatement) {
+    private void setParameter(PreparedStatement preparedStatement, Object param, BoundSql boundSql) throws SQLException {
+        if (SimpleTypeRegistry.isSimpleType(param.getClass())) {
+            preparedStatement.setObject(1, param);
+        } else if (param instanceof Map) {
+            Map map = (Map) param;
+            List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
+            for (int i = 0; i < parameterMappings.size(); i++) {
+                preparedStatement.setObject(i + 1, map.get(parameterMappings.get(i).getName()));
+            }
+        } else {
+
+        }
     }
 
     private String getSql() {
@@ -174,7 +219,7 @@ public class Mybatis {
     }
 
     private void parseSelectElement(Element selectElement) {
-        String statementId = namespace.concat(selectElement.attributeValue("id"));
+        String statementId = namespace.concat(".").concat(selectElement.attributeValue("id"));
         String parameterType = selectElement.attributeValue("parameterType");
         String resultType = selectElement.attributeValue("resultType");
         String statementType = selectElement.attributeValue("statementType");
