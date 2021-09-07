@@ -76,16 +76,13 @@ public class Mybatis {
             String sql = boundSql.getSql();
 
             String statementType = mappedStatement.getStatementType();
-            if ("prepare".equals(statementType)) {
+            if ("prepared".equals(statementType)) {
                 preparedStatement = connection.prepareStatement(sql);
             } else if ("callable".equals(statementType)) {
                 //存储过程 使用的statement
             } else {
 
             }
-
-
-            preparedStatement = connection.prepareStatement(sql);
             setParameter(preparedStatement, param, boundSql);
 
             resultSet = preparedStatement.executeQuery();

@@ -1,10 +1,7 @@
 package cn.zfy.mybatis.framework.sqlsource;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

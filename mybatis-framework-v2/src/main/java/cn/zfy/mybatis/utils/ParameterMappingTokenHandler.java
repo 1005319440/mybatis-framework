@@ -8,9 +8,6 @@ import java.util.List;
 
 /**
  * 处理#{}中的参数的
- * 
- * @author 灭霸詹
- *
  */
 public class ParameterMappingTokenHandler implements TokenHandler {
 	private List<ParameterMapping> parameterMappings = new ArrayList<>();
