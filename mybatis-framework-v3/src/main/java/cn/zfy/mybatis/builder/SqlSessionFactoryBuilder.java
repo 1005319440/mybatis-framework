@@ -1,5 +1,6 @@
 package cn.zfy.mybatis.builder;
 
+import cn.zfy.mybatis.config.Configuration;
 import cn.zfy.mybatis.factory.DefaultSqlSessionFactory;
 import cn.zfy.mybatis.factory.SqlSessionFactory;
 
@@ -16,15 +17,17 @@ public class SqlSessionFactoryBuilder {
 
 
     public SqlSessionFactory build(InputStream inputStream) {
-        return null;
+        XMLConfigBuilder xmlConfigBuilder = new XMLConfigBuilder();
+        Configuration configuration = xmlConfigBuilder.parse(inputStream);
+        return build(configuration);
     }
 
     public SqlSessionFactory build(Reader reader) {
         return null;
     }
 
-    private SqlSessionFactory build() {
-        return new DefaultSqlSessionFactory();
+    private SqlSessionFactory build(Configuration configuration) {
+        return new DefaultSqlSessionFactory(configuration);
     }
 
 }

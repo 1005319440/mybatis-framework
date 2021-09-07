@@ -1,5 +1,7 @@
 package cn.zfy.mybatis.factory;
 
+import cn.zfy.mybatis.config.Configuration;
+import cn.zfy.mybatis.sqlsession.DefaultSqlSession;
 import cn.zfy.mybatis.sqlsession.SqlSession;
 
 /**
@@ -9,8 +11,15 @@ import cn.zfy.mybatis.sqlsession.SqlSession;
  * @Created by zfy
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
+
+    private Configuration configuration;
+
+    public DefaultSqlSessionFactory(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     @Override
     public SqlSession openSession() {
-        return null;
+        return new DefaultSqlSession(configuration);
     }
 }

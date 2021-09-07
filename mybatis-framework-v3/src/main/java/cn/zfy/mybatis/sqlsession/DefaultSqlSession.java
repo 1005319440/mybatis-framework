@@ -1,5 +1,6 @@
 package cn.zfy.mybatis.sqlsession;
 
+import cn.zfy.mybatis.config.Configuration;
 import lombok.SneakyThrows;
 
 import java.util.List;
@@ -11,6 +12,13 @@ import java.util.List;
  * @Created by zfy
  */
 public class DefaultSqlSession implements SqlSession {
+
+    private Configuration configuration;
+
+    public DefaultSqlSession(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
     @Override
     public <T> List<T> selectList(String statementId, Object param) {
         return null;
