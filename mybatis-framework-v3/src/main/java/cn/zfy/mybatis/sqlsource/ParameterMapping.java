@@ -15,4 +15,7 @@ public class ParameterMapping {
 
     private Class<?> type;
 
+    public ParameterMapping(String name) {
+        this.name = name;
+    }
 }

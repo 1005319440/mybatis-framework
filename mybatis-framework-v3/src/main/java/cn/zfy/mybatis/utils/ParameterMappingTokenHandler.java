@@ -1,7 +1,7 @@
 package cn.zfy.mybatis.utils;
 
 
-import cn.zfy.mybatis.framework.sqlsource.ParameterMapping;
+import cn.zfy.mybatis.sqlsource.ParameterMapping;
 
 import java.util.ArrayList;
 import java.util.List;
