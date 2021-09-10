@@ -1,5 +1,7 @@
 package cn.zfy.mybatis.sqlsource;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,7 @@ import java.util.List;
  * @Date 2021/9/7 14:06
  * @Created by zfy
  */
+@Data
 public class BoundSql {
 
 

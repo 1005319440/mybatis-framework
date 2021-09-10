@@ -1,6 +1,8 @@
 package cn.zfy.mybatis.sqlsession;
 
 import cn.zfy.mybatis.config.Configuration;
+import cn.zfy.mybatis.config.MappedStatement;
+import cn.zfy.mybatis.executor.Executor;
 import lombok.SneakyThrows;
 
 import java.util.List;
@@ -21,12 +23,14 @@ public class DefaultSqlSession implements SqlSession {
 
     @Override
     public <T> List<T> selectList(String statementId, Object param) {
-        return null;
+        MappedStatement mappedStatement = configuration.getMappedStatementById(statementId);
+        Executor executor = configuration.newExecutor(null);
+        return executor.doQuery(configuration, mappedStatement, param);
     }
 
     @SneakyThrows
     @Override
-    public <T> T getOne(String statementId, Object param) {
+    public <T> T selectOne(String statementId, Object param) {
         List<Object> selectList = this.selectList(statementId, param);
         if (null == selectList) return null;
         if (selectList.size() > 1)

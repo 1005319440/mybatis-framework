@@ -1,5 +1,9 @@
 package cn.zfy.mybatis.config;
 
+import cn.zfy.mybatis.executor.CachingExecutor;
+import cn.zfy.mybatis.executor.Executor;
+import cn.zfy.mybatis.executor.SimpleExecutor;
+import cn.zfy.mybatis.statement.*;
 import lombok.Data;
 
 import javax.sql.DataSource;
@@ -20,6 +24,8 @@ public class Configuration {
 
     private Map<String, MappedStatement> mappedStatements = new HashMap<>();
 
+    private boolean useCache = true;
+
     public MappedStatement getMappedStatementById(String statementId) {
         return this.mappedStatements.get(statementId);
     }
@@ -29,4 +35,27 @@ public class Configuration {
     }
 
 
+    public Executor newExecutor(String type) {
+        Executor executor = null;
+        type = null == type ? "simple" : type;
+        if ("simple".equalsIgnoreCase(type)) executor = new SimpleExecutor();
+        if (!useCache) return executor;
+        return new CachingExecutor();
+    }
+
+    public StatementHandler newStatementHandler(String statementType) {
+        StatementHandler statementHandler = null;
+        if("prepared".equalsIgnoreCase(statementType))
+            statementHandler = new PreparedStatementHandler(this);
+        return statementHandler;
+    }
+
+    public ParameterHandler newParameterHandler() {
+        return new DefaultParameterHandler();
+    }
+
+
+    public ResultSetHandler newResultSetHandler() {
+        return new DefaultResultSetHandler();
+    }
 }

@@ -12,6 +12,6 @@ public interface SqlSession {
 
     <T> List<T> selectList(String statementId, Object param);
 
-    <T> T getOne(String statementId, Object param);
+    <T> T selectOne(String statementId, Object param);
 
 }
