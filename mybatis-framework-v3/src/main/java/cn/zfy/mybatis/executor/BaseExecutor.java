@@ -27,6 +27,7 @@ public abstract class BaseExecutor implements Executor {
         //一级缓存处理
         List<T> list = oneLevelCache.get(sql);
         if (null == list) list = queryFromDataSource(configuration, mappedStatement, param, boundSql);
+        oneLevelCache.put(sql, list);
         return list;
     }
 

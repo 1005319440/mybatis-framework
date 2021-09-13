@@ -2,7 +2,6 @@ package cn.zfy.mybatis.executor;
 
 import cn.zfy.mybatis.config.Configuration;
 import cn.zfy.mybatis.config.MappedStatement;
-import cn.zfy.mybatis.sqlsource.BoundSql;
 
 import java.util.List;
 
@@ -12,10 +11,17 @@ import java.util.List;
  * @Date 2021/9/10 16:24
  * @Created by zfy
  */
-public class CachingExecutor extends BaseExecutor {
+public class CachingExecutor implements Executor {
+
+    private Executor delegate;
+
+    public CachingExecutor(Executor delegate) {
+        this.delegate = delegate;
+    }
+
 
     @Override
-    public <T> List<T> queryFromDataSource(Configuration configuration, MappedStatement mappedStatement, Object param, BoundSql boundSql) {
-        return null;
+    public <T> List<T> doQuery(Configuration configuration, MappedStatement mappedStatement, Object param) {
+        return delegate.doQuery(configuration, mappedStatement, param);
     }
 }

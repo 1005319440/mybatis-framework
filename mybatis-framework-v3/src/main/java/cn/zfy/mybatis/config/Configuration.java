@@ -37,15 +37,16 @@ public class Configuration {
 
     public Executor newExecutor(String type) {
         Executor executor = null;
-        type = null == type ? "simple" : type;
+        //真正的执行器是谁，需要通过 配置来指定，如果不指定，就默认是SimpleExecutor
+        type = null == type || "".equals(type) ? "simple" : type;
         if ("simple".equalsIgnoreCase(type)) executor = new SimpleExecutor();
         if (!useCache) return executor;
-        return new CachingExecutor();
+        return new CachingExecutor(executor);
     }
 
     public StatementHandler newStatementHandler(String statementType) {
         StatementHandler statementHandler = null;
-        if("prepared".equalsIgnoreCase(statementType))
+        if ("prepared".equalsIgnoreCase(statementType))
             statementHandler = new PreparedStatementHandler(this);
         return statementHandler;
     }
