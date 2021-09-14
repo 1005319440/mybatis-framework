@@ -38,7 +38,7 @@ public class PreparedStatementHandler implements StatementHandler {
     }
 
     @Override
-    public <T> List<T> doQuery(Statement statement, MappedStatement mappedStatement) throws SQLException {
+    public <T> List<T> doQuery(Statement statement, MappedStatement mappedStatement) throws Exception {
         PreparedStatement preparedStatement = (PreparedStatement) statement;
         ResultSet resultSet = preparedStatement.executeQuery();
         List<T> resultList = new ArrayList<>();

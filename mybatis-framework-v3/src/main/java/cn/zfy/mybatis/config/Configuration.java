@@ -24,7 +24,7 @@ public class Configuration {
 
     private Map<String, MappedStatement> mappedStatements = new HashMap<>();
 
-    private boolean useCache = true;
+    private boolean useCache = false;
 
     public MappedStatement getMappedStatementById(String statementId) {
         return this.mappedStatements.get(statementId);

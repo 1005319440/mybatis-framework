@@ -20,5 +20,5 @@ public interface StatementHandler {
 
     void parameterize(Statement statement, Object param, BoundSql boundSql) throws SQLException;
 
-    <T> List<T> doQuery(Statement statement, MappedStatement mappedStatement) throws SQLException;
+    <T> List<T> doQuery(Statement statement, MappedStatement mappedStatement) throws Exception;
 }

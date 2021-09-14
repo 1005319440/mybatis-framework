@@ -34,6 +34,8 @@ public class SimpleExecutor extends BaseExecutor {
             return statementHandler.doQuery(statement, mappedStatement);
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -41,7 +43,7 @@ public class SimpleExecutor extends BaseExecutor {
     private Connection getConnection(Configuration configuration) {
         DataSource dataSource = configuration.getDataSource();
         try {
-            Connection connection = dataSource.getConnection();
+            return dataSource.getConnection();
         } catch (SQLException e) {
             e.printStackTrace();
         }
