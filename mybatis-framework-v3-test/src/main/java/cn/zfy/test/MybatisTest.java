@@ -25,7 +25,7 @@ public class MybatisTest {
     private SqlSessionFactory sqlSessionFactory;
 
     @Before
-    private void init() {
+    public void init() {
         InputStream inputStream = Resources.getResourceAsStream("mybatis-config.xml");
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
 
