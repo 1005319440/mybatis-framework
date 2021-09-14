@@ -26,10 +26,10 @@ public class DefaultResultSetHandler implements ResultSetHandler {
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
             for (int i = 0; i < columnCount; i++) {
-                String columnName = metaData.getColumnName(i);
+                String columnName = metaData.getColumnName(i + 1);
                 Field field = resultTypeClass.getDeclaredField(columnName);
                 field.setAccessible(true);
-                field.set(result, resultSet.getObject(i));
+                field.set(result, resultSet.getObject(columnName));
             }
             resultList.add((T) result);
         }
