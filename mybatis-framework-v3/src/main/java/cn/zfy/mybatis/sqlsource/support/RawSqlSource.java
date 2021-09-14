@@ -1,8 +1,11 @@
 package cn.zfy.mybatis.sqlsource.support;
 
+import cn.zfy.mybatis.sqlnode.DynamicContext;
 import cn.zfy.mybatis.sqlnode.SqlNode;
 import cn.zfy.mybatis.sqlsource.BoundSql;
 import cn.zfy.mybatis.sqlsource.SqlSource;
+import cn.zfy.mybatis.utils.GenericTokenParser;
+import cn.zfy.mybatis.utils.ParameterMappingTokenHandler;
 
 /**
  * @Classname RawSqlSource
@@ -12,15 +15,23 @@ import cn.zfy.mybatis.sqlsource.SqlSource;
  */
 public class RawSqlSource implements SqlSource {
 
-
-    private SqlNode rootSqlNode;
+    private SqlSource sqlSource;
 
     public RawSqlSource(SqlNode rootSqlNode) {
-        this.rootSqlNode = rootSqlNode;
+        DynamicContext dynamicContext = new DynamicContext();
+        rootSqlNode.apply(dynamicContext);
+        String sqlText = dynamicContext.getSql();
+        ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();
+        GenericTokenParser tokenParser = new GenericTokenParser("#{", "}", tokenHandler);
+        sqlSource = new StaticSqlSource(tokenParser.parse(sqlText), tokenHandler.getParameterMappings());
     }
+
 
     @Override
     public BoundSql getBoundSql(Object param) {
-        return null;
+
+
+        return sqlSource.getBoundSql(param);
     }
+
 }

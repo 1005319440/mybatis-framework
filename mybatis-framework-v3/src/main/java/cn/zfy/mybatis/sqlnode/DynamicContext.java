@@ -1,5 +1,7 @@
 package cn.zfy.mybatis.sqlnode;
 
+import lombok.NoArgsConstructor;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +11,7 @@ import java.util.Map;
  * @Date 2021/9/7 14:13
  * @Created by zfy
  */
+@NoArgsConstructor
 public class DynamicContext {
 
 
